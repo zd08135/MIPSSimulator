@@ -6,42 +6,66 @@ import java.io.OutputStream;
  */
 public class RegMemOps {
 
-    public int pc;
+    public Integer pc;
     public String ir;
-    public int[] reg;
-    public int[] mem;
-    public int overflow, zero, less, carry;
+    public Integer[] reg;
+    public Integer[] mem;
+    public Integer overflow, zero, less, carry;
 
     public RegMemOps()
     {
-        overflow = zero = less = carry = 0;
-        reg = new int[32];
-        mem = new int[1024];
+        pc = new Integer(0);
+        overflow = new Integer(0);
+        zero = new Integer(0);
+        less = new Integer(0);
+        carry = new Integer(0);
+
+        reg = new Integer[32];
+        mem = new Integer[1024];
         int i;
-        for(i = 0; i<32; i++) reg[i] = 0;
-        for(i = 0; i<1024; i++) mem[i] = 0;
+        for(i = 0; i<32; i++) reg[i] = new Integer(0);
+        for(i = 0; i<1024; i++) mem[i] =  new Integer(0);
     }
 
-    public void printRegMemOpInfo(OutputStream ots)
+    public void clean()
+    {
+        int i;
+        pc = overflow = zero = less = carry = null;
+        for(i = 0; i<32; i++) reg[i] = null;
+        reg = null;
+        for(i = 0; i<1024; i++) mem[i] = null;
+        mem = null;
+    }
+
+    public void setPC(int pc)
+    {
+        this.pc = null;
+        this.pc = new Integer(pc);
+    }
+    public void setIR(String ir)
+    {
+        this.ir = ir;
+    }
+    public void printRegMemOpInfo(OutputStream otsm)
     {
         byte[] res;
         int i,j;
         try{
-        res = ("PC: " + Integer.toString(pc)).getBytes();
-        ots.write(res);
-        res = ("IR" + ir + "\n").getBytes();
-        ots.write(res);
+        res = ("PC: " + Integer.toString(pc) + " ").getBytes();
+        otsm.write(res);
+        res = ("IR: " + ir + "\n").getBytes();
+        otsm.write(res);
         res = ("Overflow|Zero|Less|Carry: " +
                 overflow + "|" + zero + "|" + less + "|" + carry + "\n").getBytes();
-        ots.write(res);
+        otsm.write(res);
         for(i = 0; i<4; i++)
         {
-            String str = "Reg(" + i*8 + "-" + i*8+7 + "): ";
+            String str = "Reg(" + i*8 + "-" + (i*8+7) + "): ";
             for(j = 0; j<8; j++)
-                str += Integer.toString(reg[i * 8 + j], 16) + " ";
+                str += "0x" + Utils.generateHex(reg[i*8+j].intValue(), 8) + "   ";
             str += "\n";
             res = str.getBytes();
-            ots.write(res);
+            otsm.write(res);
         }
         }catch (Exception e)
         {

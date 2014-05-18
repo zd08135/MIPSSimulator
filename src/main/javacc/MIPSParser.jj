@@ -7,6 +7,7 @@ options {
   ERROR_REPORTING = false;
   STATIC = false;
   COMMON_TOKEN_ACTION = false;
+  OUTPUT_DIRECTORY = "java/";
   JDK_VERSION = "1.6";
 }
 
@@ -127,8 +128,11 @@ void instruction() throws ParseException:
 {
     <NOP> {instrs.add(new Nop());}
 |
-    <ADD> rs=get_reg() rd=get_reg() rt=get_reg()
-    {instrs.add(new Add(rd, rt, rs));}
+    <ADD> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Add(rd, rs, rt));}
+|
+    <ADDI> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new AddI(rs,rt,imm));}
 }
 
 int get_reg() throws ParseException:
@@ -138,5 +142,14 @@ int get_reg() throws ParseException:
 }
 {
     <REG_LOGO>
-    t = <INTEGER_LITERAL> {return Integer.parseInt(t.image);}
+    t = <INTEGER_LITERAL> {return Utils.parseInt(t.image);}
+}
+
+int get_imm() throws ParseException:
+{
+    Token t;
+    int i;
+}
+{
+    t = <INTEGER_LITERAL> {return Utils.parseInt(t.image);}
 }

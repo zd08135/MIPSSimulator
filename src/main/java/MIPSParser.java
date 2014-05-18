@@ -41,10 +41,16 @@ void input() throws ParseException, ParseException {instrs = new ArrayList<Instr
 instrs.add(new Nop());
     } else if (jj_2_3(2)) {
       jj_consume_token(ADD);
-      rs = get_reg();
       rd = get_reg();
+      rs = get_reg();
       rt = get_reg();
-instrs.add(new Add(rd, rt, rs));
+instrs.add(new Add(rd, rs, rt));
+    } else if (jj_2_4(2)) {
+      jj_consume_token(ADDI);
+      rt = get_reg();
+      rs = get_reg();
+      imm = get_imm();
+instrs.add(new AddI(rs,rt,imm));
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -55,7 +61,14 @@ instrs.add(new Add(rd, rt, rs));
     int r;
     jj_consume_token(REG_LOGO);
     t = jj_consume_token(INTEGER_LITERAL);
-{if ("" != null) return Integer.parseInt(t.image);}
+{if ("" != null) return Utils.parseInt(t.image);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public int get_imm() throws ParseException, ParseException {Token t;
+    int i;
+    t = jj_consume_token(INTEGER_LITERAL);
+{if ("" != null) return Utils.parseInt(t.image);}
     throw new Error("Missing return statement in function");
   }
 
@@ -80,6 +93,26 @@ instrs.add(new Add(rd, rt, rs));
     catch(LookaheadSuccess ls) { return true; }
   }
 
+  private boolean jj_2_4(int xla)
+ {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_4(); }
+    catch(LookaheadSuccess ls) { return true; }
+  }
+
+  private boolean jj_3_4()
+ {
+    if (jj_scan_token(ADDI)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_3()
+ {
+    if (jj_scan_token(REG_LOGO)) return true;
+    return false;
+  }
+
   private boolean jj_3_1()
  {
     if (jj_3R_2()) return true;
@@ -93,19 +126,16 @@ instrs.add(new Add(rd, rt, rs));
     return false;
   }
 
-  private boolean jj_3R_3()
- {
-    if (jj_scan_token(REG_LOGO)) return true;
-    return false;
-  }
-
   private boolean jj_3R_2()
  {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_2()) {
     jj_scanpos = xsp;
-    if (jj_3_3()) return true;
+    if (jj_3_3()) {
+    jj_scanpos = xsp;
+    if (jj_3_4()) return true;
+    }
     }
     return false;
   }

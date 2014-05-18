@@ -12,7 +12,7 @@ public class MIPSSimulator {
     boolean isCheck;
     boolean isExecute;
     boolean isHelp;
-    OutputStream ots;
+    OutputStream otsm;
     String fileIn;
 
     MIPSParser parser;
@@ -82,7 +82,7 @@ public class MIPSSimulator {
         if(cl.hasOption("logfile"))
         {
             try{
-            ots = new FileOutputStream(cl.getOptionValue("logfile"));
+            otsm = new FileOutputStream(cl.getOptionValue("logfile"));
             }catch (FileNotFoundException fne)
             {
                 System.err.println(fne.getMessage());
@@ -91,7 +91,7 @@ public class MIPSSimulator {
         }
         else
         {
-            ots = System.out;
+            otsm = System.out;
         }
         String[] res = cl.getArgs();
         fileIn = res[0];
@@ -132,6 +132,9 @@ public class MIPSSimulator {
         {
             Instruction instr = instrs.get(i);
             instr.run(rmo);
+            rmo.setIR(instr.generateIR());
+            rmo.printRegMemOpInfo(otsm);
         }
+        rmo.clean();
     }
 }

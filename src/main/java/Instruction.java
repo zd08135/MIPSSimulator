@@ -41,3 +41,24 @@ class Add implements Instruction{
                 Utils.generateBinary(32, 6);
     }
 }
+
+class AddI implements Instruction{
+    int imm, rs, rt;
+    public AddI(int rs, int rt, int imm)
+    {
+        this.imm = imm;
+        this.rs = rs;
+        this.rt = rt;
+    }
+    public void run(RegMemOps rmo)
+    {
+        rmo.reg[rt] = rmo.reg[rs] + imm;
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(8, 6) +
+                Utils.generateBinary(rs, 5) +
+                Utils.generateBinary(rt, 5) +
+                Utils.generateBinary(imm, 16);
+    }
+}
