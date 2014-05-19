@@ -1,4 +1,5 @@
-import javax.rmi.CORBA.Util;
+
+
 
 /**
  * Created by ZDKING on 14-5-16.
@@ -113,6 +114,52 @@ class Sub implements Instruction{
     }
 }
 
+class Clo implements Instruction{
+    int rd,rs;
+    public Clo(int rd, int rs)
+    {
+        this.rd = rd;
+        this.rs = rs;
+    }
+    public void run(RegMemOps rmo)
+    {
+        int res = Integer.numberOfLeadingZeros(~(rmo.reg[rs].intValue()));
+        rmo.reg[rd] = new Integer(res);
+        rmo.setPC(rmo.getPC()+1);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0x1c, 6) +
+                Utils.generateBinary(rs, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(0x21, 11);
+    }
+}
+
+class Clz implements Instruction{
+    int rd,rs;
+    public Clz(int rd, int rs)
+    {
+        this.rd = rd;
+        this.rs = rs;
+    }
+    public void run(RegMemOps rmo)
+    {
+        int res = Integer.numberOfLeadingZeros(rmo.reg[rs].intValue());
+        rmo.reg[rd] = new Integer(res);
+        rmo.setPC(rmo.getPC()+1);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0x1c, 6) +
+                Utils.generateBinary(rs, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(0x20, 11);
+    }
+}
+
 class Lui implements Instruction{
     int rt;
     short imm;
@@ -135,6 +182,26 @@ class Lui implements Instruction{
                 Utils.generateBinary(imm, 16);
     }
 }
+
+class B implements Instruction{
+    short offset;
+    public B(short offset)
+    {
+        this.offset = offset;
+    }
+    public void run(RegMemOps rmo)
+    {
+        int target = (int)offset;
+        rmo.setPC(rmo.getPC() + target);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0x4, 6) +
+                Utils.generateBinary(0, 10) +
+                Utils.generateBinary(offset, 16);
+    }
+}
+
 class Bgez implements Instruction{
     int rs;
     short offset;

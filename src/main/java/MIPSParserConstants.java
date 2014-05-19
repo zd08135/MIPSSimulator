@@ -35,17 +35,19 @@ public interface MIPSParserConstants {
   /** RegularExpression Id. */
   int LUI = 22;
   /** RegularExpression Id. */
-  int BGEZ = 23;
+  int B = 23;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 24;
+  int BGEZ = 24;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 25;
+  int INTEGER_LITERAL = 25;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 26;
+  int DECIMAL_LITERAL = 26;
   /** RegularExpression Id. */
-  int OCTAL_LITERAL = 27;
+  int HEX_LITERAL = 27;
   /** RegularExpression Id. */
-  int REG_LOGO = 28;
+  int OCTAL_LITERAL = 28;
+  /** RegularExpression Id. */
+  int REG_LOGO = 29;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -81,6 +83,7 @@ public interface MIPSParserConstants {
     "\"clz\"",
     "\"and\"",
     "\"lui\"",
+    "\"b\"",
     "\"bgez\"",
     "<INTEGER_LITERAL>",
     "<DECIMAL_LITERAL>",

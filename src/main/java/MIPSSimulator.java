@@ -13,6 +13,7 @@ public class MIPSSimulator {
     boolean isStep;
     OutputStream otsm;
     String fileIn;
+    FileInputStream fin;
 
     MIPSParser parser;
     RegMemOps rmo;
@@ -26,10 +27,17 @@ public class MIPSSimulator {
         simulator.initialize();
         simulator.parseInstrs();
         simulator.executeInstrs();
+        simulator.clean();
         }catch(ParseException pe)
         {
             simulator.parser.printParseException(pe);
         }
+        catch(IOException ioe)
+        {
+            ioe.printStackTrace();
+        }
+
+
     }
 
     public MIPSSimulator()
@@ -37,8 +45,16 @@ public class MIPSSimulator {
         isHelp = false;
         isStep = false;
         fileIn = null;
+        fin = null;
     }
 
+    public void clean() throws IOException
+    {
+        rmo.clean();
+        fin.close();
+        if(otsm instanceof FileOutputStream)
+            otsm.close();
+    }
     public boolean parseArgs(String args[])
     {
         HelpFormatter formatter = new HelpFormatter();
@@ -95,7 +111,6 @@ public class MIPSSimulator {
     public void initialize()
     {
         try{
-           FileInputStream fin;
            fin = new FileInputStream(fileIn);
            parser = new MIPSParser(fin);
         }
@@ -133,6 +148,6 @@ public class MIPSSimulator {
         }
         if(isStep == false)
             rmo.printRegMemOpInfo(otsm);
-        rmo.clean();
+        System.out.println("End executing");
     }
 }
