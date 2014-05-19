@@ -88,6 +88,7 @@ TOKEN :
 |   < SUB:      "sub" >
 |	< CLO:		"clo" >
 |	< CLZ:		"clz" >
+|   < AND:      "and" >
 |   < LUI:      "lui" >
 |   < BGEZ:     "bgez" >
 }
