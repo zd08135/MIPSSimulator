@@ -81,6 +81,7 @@ MORE :
 TOKEN :
 {
 	< NOP:		"nop">
+/*  alu instrs */
 |	< ADD:		"add" >
 |	< ADDI:		"addi" >
 |	< ADDIU:	"addiu" >
@@ -90,6 +91,9 @@ TOKEN :
 |	< CLZ:		"clz" >
 |   < AND:      "and" >
 |   < LUI:      "lui" >
+|   < SEB:      "seb" >
+|   < SEH:      "seh" >
+/*  jump instrs */
 |   < B:        "b" >
 |   < BGEZ:     "bgez" >
 }
@@ -150,6 +154,12 @@ void instruction() throws ParseException:
 |
     <LUI> rt=get_reg() imm=get_imm()
     {instrs.add(new Lui(rt, imm));}
+|
+    <SEB> rd=get_reg() rt=get_reg()
+    {instrs.add(new Seb(rd, rt));}
+|
+    <SEH> rd=get_reg() rt=get_reg()
+    {instrs.add(new Seh(rd, rt));}
 |
     <B> offset=get_offset()
     {instrs.add(new B(offset));}

@@ -183,6 +183,52 @@ class Lui implements Instruction{
     }
 }
 
+class Seb implements Instruction{
+    int rd, rt;
+    public Seb(int rd, int rt)
+    {
+        this.rd = rd;
+        this.rt = rt;
+    }
+    public void run(RegMemOps rmo)
+    {
+        rmo.reg[rd] = (int)rmo.reg[rt].byteValue();
+        rmo.setPC(rmo.getPC()+1);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0x1f, 6) +
+                Utils.generateBinary(0, 5) +
+                Utils.generateBinary(rt, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(0x10, 5)+
+                Utils.generateBinary(0x20, 6);
+    }
+}
+
+class Seh implements Instruction{
+    int rd, rt;
+    public Seh(int rd, int rt)
+    {
+        this.rd = rd;
+        this.rt = rt;
+    }
+    public void run(RegMemOps rmo)
+    {
+        rmo.reg[rd] = (int)rmo.reg[rt].shortValue();
+        rmo.setPC(rmo.getPC()+1);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0x1f, 6) +
+                Utils.generateBinary(0, 5) +
+                Utils.generateBinary(rt, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(0x10, 5)+
+                Utils.generateBinary(0x20, 6);
+    }
+}
+
 class B implements Instruction{
     short offset;
     public B(short offset)
