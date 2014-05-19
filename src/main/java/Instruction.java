@@ -220,7 +220,7 @@ class Bgez implements Instruction{
     }
     public String generateIR()
     {
-        return Utils.generateBinary(1,6) +
+        return Utils.generateBinary(1,6) + 
                 Utils.generateBinary(rs,5) +
                 Utils.generateBinary(1,5) +
                 Utils.generateBinary(offset,16);
