@@ -35,7 +35,8 @@ void input() throws ParseException, ParseException {instrs = new ArrayList<Instr
   }
 
   final public void instruction() throws ParseException, ParseException {Token t;
-    int rs, rd, rt, imm, target, offset;
+    int rs, rd, rt, target;
+    short imm, offset;
     if (jj_2_2(2)) {
       jj_consume_token(NOP);
 instrs.add(new Nop());
@@ -50,7 +51,23 @@ instrs.add(new Add(rd, rs, rt));
       rt = get_reg();
       rs = get_reg();
       imm = get_imm();
-instrs.add(new AddI(rs,rt,imm));
+instrs.add(new Addi(rs, rt, imm));
+    } else if (jj_2_5(2)) {
+      jj_consume_token(SUB);
+      rd = get_reg();
+      rs = get_reg();
+      rt = get_reg();
+instrs.add(new Sub(rd, rs, rt));
+    } else if (jj_2_6(2)) {
+      jj_consume_token(LUI);
+      rt = get_reg();
+      imm = get_imm();
+instrs.add(new Lui(rt, imm));
+    } else if (jj_2_7(2)) {
+      jj_consume_token(BGEZ);
+      rs = get_reg();
+      offset = get_offset();
+instrs.add(new Bgez(rs, offset));
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -58,17 +75,27 @@ instrs.add(new AddI(rs,rt,imm));
   }
 
   final public int get_reg() throws ParseException, ParseException {Token t;
-    int r;
     jj_consume_token(REG_LOGO);
     t = jj_consume_token(INTEGER_LITERAL);
 {if ("" != null) return Utils.parseInt(t.image);}
     throw new Error("Missing return statement in function");
   }
 
-  final public int get_imm() throws ParseException, ParseException {Token t;
-    int i;
+  final public int get_target() throws ParseException, ParseException {Token t;
     t = jj_consume_token(INTEGER_LITERAL);
 {if ("" != null) return Utils.parseInt(t.image);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public short get_imm() throws ParseException, ParseException {Token t;
+    t = jj_consume_token(INTEGER_LITERAL);
+{if ("" != null) return Utils.parseShort(t.image);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public short get_offset() throws ParseException, ParseException {Token t;
+    t = jj_consume_token(INTEGER_LITERAL);
+{if ("" != null) return Utils.parseShort(t.image);}
     throw new Error("Missing return statement in function");
   }
 
@@ -100,11 +127,25 @@ instrs.add(new AddI(rs,rt,imm));
     catch(LookaheadSuccess ls) { return true; }
   }
 
-  private boolean jj_3_4()
+  private boolean jj_2_5(int xla)
  {
-    if (jj_scan_token(ADDI)) return true;
-    if (jj_3R_3()) return true;
-    return false;
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_5(); }
+    catch(LookaheadSuccess ls) { return true; }
+  }
+
+  private boolean jj_2_6(int xla)
+ {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_6(); }
+    catch(LookaheadSuccess ls) { return true; }
+  }
+
+  private boolean jj_2_7(int xla)
+ {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_7(); }
+    catch(LookaheadSuccess ls) { return true; }
   }
 
   private boolean jj_3R_3()
@@ -113,16 +154,9 @@ instrs.add(new AddI(rs,rt,imm));
     return false;
   }
 
-  private boolean jj_3_1()
+  private boolean jj_3_2()
  {
-    if (jj_3R_2()) return true;
-    return false;
-  }
-
-  private boolean jj_3_3()
- {
-    if (jj_scan_token(ADD)) return true;
-    if (jj_3R_3()) return true;
+    if (jj_scan_token(NOP)) return true;
     return false;
   }
 
@@ -134,15 +168,59 @@ instrs.add(new AddI(rs,rt,imm));
     jj_scanpos = xsp;
     if (jj_3_3()) {
     jj_scanpos = xsp;
-    if (jj_3_4()) return true;
+    if (jj_3_4()) {
+    jj_scanpos = xsp;
+    if (jj_3_5()) {
+    jj_scanpos = xsp;
+    if (jj_3_6()) {
+    jj_scanpos = xsp;
+    if (jj_3_7()) return true;
+    }
+    }
+    }
     }
     }
     return false;
   }
 
-  private boolean jj_3_2()
+  private boolean jj_3_1()
  {
-    if (jj_scan_token(NOP)) return true;
+    if (jj_3R_2()) return true;
+    return false;
+  }
+
+  private boolean jj_3_7()
+ {
+    if (jj_scan_token(BGEZ)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  private boolean jj_3_6()
+ {
+    if (jj_scan_token(LUI)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  private boolean jj_3_5()
+ {
+    if (jj_scan_token(SUB)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  private boolean jj_3_4()
+ {
+    if (jj_scan_token(ADDI)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  private boolean jj_3_3()
+ {
+    if (jj_scan_token(ADD)) return true;
+    if (jj_3R_3()) return true;
     return false;
   }
 

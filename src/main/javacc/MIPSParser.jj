@@ -85,10 +85,11 @@ TOKEN :
 |	< ADDI:		"addi" >
 |	< ADDIU:	"addiu" >
 |	< ADDU:		"addu" >
+|   < SUB:      "sub" >
 |	< CLO:		"clo" >
 |	< CLZ:		"clz" >
-|	< DIV:		"div" >
-|	< DIVU:		"divu" >
+|   < LUI:      "lui" >
+|   < BGEZ:     "bgez" >
 }
 
 TOKEN :
@@ -123,7 +124,8 @@ void input() throws ParseException:
 void instruction() throws ParseException:
 {
     Token t;
-    int rs, rd, rt, imm, target, offset;
+    int rs, rd, rt, target;
+    short imm, offset;
 }
 {
     <NOP> {instrs.add(new Nop());}
@@ -132,24 +134,47 @@ void instruction() throws ParseException:
     {instrs.add(new Add(rd, rs, rt));}
 |
     <ADDI> rt=get_reg() rs=get_reg() imm=get_imm()
-    {instrs.add(new AddI(rs,rt,imm));}
+    {instrs.add(new Addi(rs, rt, imm));}
+|
+    <SUB> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Sub(rd, rs, rt));}
+|
+    <LUI> rt=get_reg() imm=get_imm()
+    {instrs.add(new Lui(rt, imm));}
+|
+    <BGEZ> rs=get_reg() offset=get_offset()
+    {instrs.add(new Bgez(rs, offset));}
 }
 
 int get_reg() throws ParseException:
 {
     Token t;
-    int r;
 }
 {
     <REG_LOGO>
     t = <INTEGER_LITERAL> {return Utils.parseInt(t.image);}
 }
 
-int get_imm() throws ParseException:
+int get_target() throws ParseException:
 {
     Token t;
-    int i;
 }
 {
     t = <INTEGER_LITERAL> {return Utils.parseInt(t.image);}
+}
+
+short get_imm() throws ParseException:
+{
+    Token t;
+}
+{
+    t = <INTEGER_LITERAL> {return Utils.parseShort(t.image);}
+}
+
+short get_offset() throws ParseException:
+{
+    Token t;
+}
+{
+    t = <INTEGER_LITERAL> {return Utils.parseShort(t.image);}
 }

@@ -42,6 +42,10 @@ public class RegMemOps {
         this.pc = null;
         this.pc = new Integer(pc);
     }
+    public int getPC()
+    {
+        return pc.intValue();
+    }
     public void setIR(String ir)
     {
         this.ir = ir;
@@ -50,6 +54,7 @@ public class RegMemOps {
     {
         byte[] res;
         int i,j;
+        String str;
         try{
         res = ("PC: " + Integer.toString(pc) + " ").getBytes();
         otsm.write(res);
@@ -60,13 +65,16 @@ public class RegMemOps {
         otsm.write(res);
         for(i = 0; i<4; i++)
         {
-            String str = "Reg(" + i*8 + "-" + (i*8+7) + "): ";
+            str = "Reg(" + i*8 + "-" + (i*8+7) + "):\t";
             for(j = 0; j<8; j++)
-                str += "0x" + Utils.generateHex(reg[i*8+j].intValue(), 8) + "   ";
+                str += "0x" + Utils.generateHex(reg[i*8+j].intValue(), 8) + "  ";
             str += "\n";
             res = str.getBytes();
             otsm.write(res);
         }
+        str = "\n";
+        res = str.getBytes();
+        otsm.write(res);
         }catch (Exception e)
         {
             e.printStackTrace();

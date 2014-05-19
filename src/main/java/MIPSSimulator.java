@@ -9,9 +9,8 @@ import java.util.ArrayList;
 
 public class MIPSSimulator {
 
-    boolean isCheck;
-    boolean isExecute;
     boolean isHelp;
+    boolean isStep;
     OutputStream otsm;
     String fileIn;
 
@@ -35,9 +34,8 @@ public class MIPSSimulator {
 
     public MIPSSimulator()
     {
-        isCheck = false;
-        isExecute = false;
         isHelp = false;
+        isStep = false;
         fileIn = null;
     }
 
@@ -48,14 +46,14 @@ public class MIPSSimulator {
         CommandLine cl = null;
 
         Options opts = new Options();
-        opts.addOption("c", "check", false, "check syntax errors");
-        opts.addOption("e", "execute", false, "execute the program");
         opts.addOption("h", "help",  false, "print help for the command.");
+        opts.addOption("s", "step", false, "show info of each step");
         opts.addOption(OptionBuilder.withArgName("file")
+                .withLongOpt("dumpfile")
                 .hasArg()
                 .withDescription("output of execute information")
-                .create("logfile"));
-        String formatStr = "MIPSEmulator [-c/--check][-e/--execute][-h/--help] -O FileName";
+                .create("df"));
+        String formatStr = "MIPSEmulator [-c/--check][-e/--execute][-h/--help] -df FileName";
         try {
             cl = cmdParser.parse(opts, args);
         } catch (org.apache.commons.cli.ParseException pe) {
@@ -64,12 +62,8 @@ public class MIPSSimulator {
             return false;
         }
 
-        if(cl.hasOption("c")) {
-            isCheck = true;
-        }
-
-        if(cl.hasOption("e")) {
-            isExecute = true;
+        if(cl.hasOption("s")) {
+            isStep = true;
         }
 
         if(cl.hasOption("h")) {
@@ -79,10 +73,10 @@ public class MIPSSimulator {
             return false;
         }
 
-        if(cl.hasOption("logfile"))
+        if(cl.hasOption("dumpfile"))
         {
             try{
-            otsm = new FileOutputStream(cl.getOptionValue("logfile"));
+            otsm = new FileOutputStream(cl.getOptionValue("dumpfile"));
             }catch (FileNotFoundException fne)
             {
                 System.err.println(fne.getMessage());
@@ -95,7 +89,6 @@ public class MIPSSimulator {
         }
         String[] res = cl.getArgs();
         fileIn = res[0];
-        System.out.println(res.length + "," + fileIn);
         return true;
     }
 
@@ -110,13 +103,11 @@ public class MIPSSimulator {
         {
             e.printStackTrace();
         }
-        System.out.println("inistialize()");
 
     }
 
     public void parseInstrs() throws ParseException
     {
-        System.out.println("parseInstrs()");
         parser.parse();
     }
 
@@ -124,17 +115,24 @@ public class MIPSSimulator {
     {
         ArrayList<Instruction> instrs = parser.getInstrs();
         rmo = new RegMemOps();
-        int i = 0;
+        int i = 0,pc;
         int l = instrs.size();
         System.out.println(instrs.size() + " instructions in program");
         System.out.println("Start executing");
-        for(i = 0; i<l; i++)
+        rmo.setPC(0);
+        while(true)
         {
-            Instruction instr = instrs.get(i);
+            pc = rmo.getPC();
+            if((pc < 0) || (pc>=instrs.size()))
+                break;
+            Instruction instr = instrs.get(pc);
             instr.run(rmo);
             rmo.setIR(instr.generateIR());
-            rmo.printRegMemOpInfo(otsm);
+            if(isStep == true)
+                rmo.printRegMemOpInfo(otsm);
         }
+        if(isStep == false)
+            rmo.printRegMemOpInfo(otsm);
         rmo.clean();
     }
 }

@@ -33,10 +33,25 @@ public class Utils {
 
     public static int parseInt(String str) throws NumberFormatException
     {
+        long res;
         if((str.charAt(0) != '0') || (str.length() == 1))
-            return Integer.parseInt(str, 10);
-        if((str.charAt(1) == 'x') || (str.charAt(1) == 'X'))
-            return Integer.parseInt(str.substring(2), 16);
-        return Integer.parseInt(str.substring(1), 8);
+            res = Long.parseLong(str, 10);
+        else if((str.charAt(1) == 'x') || (str.charAt(1) == 'X'))
+            res = Long.parseLong(str.substring(2), 16);
+        else
+            res = Long.parseLong(str.substring(1), 8);
+        return (int)res;
+    }
+
+    public static short parseShort(String str) throws NumberFormatException
+    {
+        int res;
+        if((str.charAt(0) != '0') || (str.length() == 1))
+            res = Integer.parseInt(str, 10);
+        else if((str.charAt(1) == 'x') || (str.charAt(1) == 'X'))
+            res = Integer.parseInt(str.substring(2), 16);
+        else
+            res = Integer.parseInt(str.substring(1), 8);
+        return (short)res;
     }
 }
