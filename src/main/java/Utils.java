@@ -1,5 +1,7 @@
+
 /**
  * Created by ZDKING on 14-5-16.
+ * Some util function for execution.
  */
 public class Utils {
 

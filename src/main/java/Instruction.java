@@ -11,6 +11,7 @@ interface Instruction {
 
 }
 
+/* CPU Instruction Control Instructions */
 class Nop implements Instruction{
     public void run(RegMemOps rmo)
     {
@@ -22,6 +23,7 @@ class Nop implements Instruction{
     }
 }
 
+/*CPU Arithmetic Instructions */
 class Add implements Instruction{
     int rd, rs, rt;
     public Add(int rd, int rs, int rt)
@@ -49,7 +51,7 @@ class Add implements Instruction{
                 Utils.generateBinary(rt, 5) +
                 Utils.generateBinary(rd, 5) +
                 Utils.generateBinary(0, 5) +
-                Utils.generateBinary(32, 6);
+                Utils.generateBinary(0x20, 6);
     }
 }
 
@@ -110,7 +112,7 @@ class Sub implements Instruction{
                 Utils.generateBinary(rt, 5) +
                 Utils.generateBinary(rd, 5) +
                 Utils.generateBinary(0, 5) +
-                Utils.generateBinary(34, 6);
+                Utils.generateBinary(0x22, 6);
     }
 }
 
@@ -160,29 +162,6 @@ class Clz implements Instruction{
     }
 }
 
-class Lui implements Instruction{
-    int rt;
-    short imm;
-    public Lui(int rt, short imm)
-    {
-        this.rt = rt;
-        this.imm = imm;
-    }
-    public void run(RegMemOps rmo)
-    {
-        long tmp = (long)imm << 16;
-        rmo.reg[rt] = new Integer((int)tmp);
-        rmo.setPC(rmo.getPC()+1);
-    }
-    public String generateIR()
-    {
-        return Utils.generateBinary(0xf, 6) +
-                Utils.generateBinary(0, 5) +
-                Utils.generateBinary(rt, 5) +
-                Utils.generateBinary(imm, 16);
-    }
-}
-
 class Seb implements Instruction{
     int rd, rt;
     public Seb(int rd, int rt)
@@ -228,7 +207,7 @@ class Seh implements Instruction{
                 Utils.generateBinary(0x20, 6);
     }
 }
-
+/* CPU Branch and Jump Instructions */
 class B implements Instruction{
     short offset;
     public B(short offset)
@@ -270,5 +249,77 @@ class Bgez implements Instruction{
                 Utils.generateBinary(rs,5) +
                 Utils.generateBinary(1,5) +
                 Utils.generateBinary(offset,16);
+    }
+}
+
+/* CPU Logical Instructions */
+class And implements Instruction{
+    int rd, rs, rt;
+    public And(int rd, int rs, int rt)
+    {
+        this.rd = rd;
+        this.rs = rs;
+        this.rt = rt;
+    }
+    public void run(RegMemOps rmo)
+    {
+        rmo.reg[rd] = rmo.reg[rs] & rmo.reg[rt];
+        rmo.setPC(rmo.getPC()+1);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0, 6) +
+                Utils.generateBinary(rs, 5) +
+                Utils.generateBinary(rt, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(0, 5) +
+                Utils.generateBinary(0x24, 6);
+    }
+}
+
+class Lui implements Instruction{
+    int rt;
+    short imm;
+    public Lui(int rt, short imm)
+    {
+        this.rt = rt;
+        this.imm = imm;
+    }
+    public void run(RegMemOps rmo)
+    {
+        long tmp = (long)imm << 16;
+        rmo.reg[rt] = new Integer((int)tmp);
+        rmo.setPC(rmo.getPC()+1);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0xf, 6) +
+                Utils.generateBinary(0, 5) +
+                Utils.generateBinary(rt, 5) +
+                Utils.generateBinary(imm, 16);
+    }
+}
+
+class Xor implements Instruction{
+    int rd, rs, rt;
+    public Xor(int rd, int rs, int rt)
+    {
+        this.rd = rd;
+        this.rs = rs;
+        this.rt = rt;
+    }
+    public void run(RegMemOps rmo)
+    {
+        rmo.reg[rd] = rmo.reg[rs] ^ rmo.reg[rt];
+        rmo.setPC(rmo.getPC()+1);
+    }
+    public String generateIR()
+    {
+        return Utils.generateBinary(0, 6) +
+                Utils.generateBinary(rs, 5) +
+                Utils.generateBinary(rt, 5) +
+                Utils.generateBinary(rd, 5) +
+                Utils.generateBinary(0, 5) +
+                Utils.generateBinary(0x26, 6);
     }
 }

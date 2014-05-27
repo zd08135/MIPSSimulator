@@ -56,9 +56,11 @@ public class RegMemOps {
         int i,j;
         String str;
         try{
-        res = ("PC: " + Integer.toString(pc) + " ").getBytes();
-        otsm.write(res);
         res = ("IR: " + ir + "\n").getBytes();
+        otsm.write(res);
+        res = ("After executing:\n").getBytes();
+        otsm.write(res);
+        res = ("PC: " + Integer.toString(pc) + " ").getBytes();
         otsm.write(res);
         res = ("Overflow|Zero|Less|Carry: " +
                 overflow + "|" + zero + "|" + less + "|" + carry + "\n").getBytes();
@@ -72,12 +74,11 @@ public class RegMemOps {
             res = str.getBytes();
             otsm.write(res);
         }
-        str = "\n";
-        res = str.getBytes();
+        res = "\n".getBytes();
         otsm.write(res);
         }catch (Exception e)
         {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 }
