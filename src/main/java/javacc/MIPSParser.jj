@@ -92,8 +92,12 @@ TOKEN :
 |	< ADDIU:	"addiu" >
 |	< ADDU:		"addu" >
 |   < SUB:      "sub" >
+|   < SUBU:     "subu" >
 |	< CLO:		"clo" >
 |	< CLZ:		"clz" >
+|   < SLT:      "slt" >
+|   < SLTI:     "slti" >
+|   < SLTIU:    "sltiu" >
 |   < SEB:      "seb" >
 |   < SEH:      "seh" >
 /* logic instrs */
@@ -151,15 +155,32 @@ void instruction() throws ParseException:
     <ADDI> rt=get_reg() rs=get_reg() imm=get_imm()
     {instrs.add(new Addi(rs, rt, imm));}
 |
+	<ADDIU> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new Addiu(rs, rt, imm));}
+|
+	<ADDU> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Addu(rd, rs, rt));}
+|
     <SUB> rd=get_reg() rs=get_reg() rt=get_reg()
     {instrs.add(new Sub(rd, rs, rt));}
-
+|
+	<SUBU> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Subu(rd, rs, rt));}
 |
     <CLO> rd=get_reg() rs=get_reg()
     {instrs.add(new Clo(rd, rs));}
 |
     <CLZ> rd=get_reg() rs=get_reg()
     {instrs.add(new Clz(rd, rs));}
+|
+    <SLT> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Slt(rd, rs, rt));}
+|
+    <SLTI> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new Slti(rs, rt, imm));}
+|
+    <SLTIU> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new Sltiu(rs, rt, imm));}
 |
     <SEB> rd=get_reg() rt=get_reg()
     {instrs.add(new Seb(rd, rt));}
