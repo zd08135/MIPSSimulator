@@ -1,0 +1,218 @@
+
+
+options {
+  LOOKAHEAD = 2;
+  FORCE_LA_CHECK = true;
+  JAVA_UNICODE_ESCAPE = true;
+  ERROR_REPORTING = false;
+  STATIC = false;
+  COMMON_TOKEN_ACTION = false;
+  OUTPUT_DIRECTORY = "../parser/";
+  JDK_VERSION = "1.6";
+}
+
+PARSER_BEGIN(MIPSParser)
+
+package parser;
+
+import java.util.ArrayList;
+
+import instructions.*;
+import main.Utils;
+
+public class MIPSParser
+{
+    ArrayList<Instruction> instrs;
+	public void parse() throws ParseException
+	{
+	    input();
+	}
+
+    public static void printParseException(ParseException pe)
+    {
+    	System.err.println(pe.getMessage());
+    }
+
+    public ArrayList<Instruction> getInstrs()
+    {
+        return instrs;
+    }
+}
+PARSER_END(MIPSParser)
+
+/* RESERVED INSTRUCTION NAMES */
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+|	<"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+|	"/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+TOKEN :
+{
+	< NOP:		"nop">
+/*  alu instrs */
+|	< ADD:		"add" >
+|	< ADDI:		"addi" >
+|	< ADDIU:	"addiu" >
+|	< ADDU:		"addu" >
+|   < SUB:      "sub" >
+|	< CLO:		"clo" >
+|	< CLZ:		"clz" >
+|   < SEB:      "seb" >
+|   < SEH:      "seh" >
+/* logic instrs */
+|   < AND:      "and" >
+|   < LUI:      "lui" >
+|   < XOR:      "xor" >
+/*  jump instrs */
+|   < B:        "b" >
+|   < BGEZ:     "bgez" >
+}
+
+TOKEN :
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+}
+
+TOKEN :
+{
+   < REG_LOGO: "$" >
+}
+/** Root production. */
+
+void input() throws ParseException:
+{
+    instrs = new ArrayList<Instruction>();
+}
+{
+    (instruction())* <EOF>
+}
+
+void instruction() throws ParseException:
+{
+    Token t;
+    int rs, rd, rt, target;
+    short imm, offset;
+}
+{
+    <NOP>
+    {instrs.add(new Nop());}
+/* alu instrs */
+|
+    <ADD> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Add(rd, rs, rt));}
+|
+    <ADDI> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new Addi(rs, rt, imm));}
+|
+    <SUB> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Sub(rd, rs, rt));}
+
+|
+    <CLO> rd=get_reg() rs=get_reg()
+    {instrs.add(new Clo(rd, rs));}
+|
+    <CLZ> rd=get_reg() rs=get_reg()
+    {instrs.add(new Clz(rd, rs));}
+|
+    <SEB> rd=get_reg() rt=get_reg()
+    {instrs.add(new Seb(rd, rt));}
+|
+    <SEH> rd=get_reg() rt=get_reg()
+    {instrs.add(new Seh(rd, rt));}
+/* logical instrs */
+|
+    <AND> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new And(rd, rs, rt));}
+|
+    <XOR> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Xor(rd, rs, rt));}
+|
+    <LUI> rt=get_reg() imm=get_imm()
+    {instrs.add(new Lui(rt, imm));}
+|
+    <B> offset=get_offset()
+    {instrs.add(new B(offset));}
+|
+    <BGEZ> rs=get_reg() offset=get_offset()
+    {instrs.add(new Bgez(rs, offset));}
+}
+
+int get_reg() throws ParseException:
+{
+    Token t;
+}
+{
+    <REG_LOGO>
+    t = <INTEGER_LITERAL> {return Utils.parseInt(t.image);}
+}
+
+int get_target() throws ParseException:
+{
+    Token t;
+}
+{
+    t = <INTEGER_LITERAL> {return Utils.parseInt(t.image);}
+}
+
+short get_imm() throws ParseException:
+{
+    Token t;
+}
+{
+    t = <INTEGER_LITERAL> {return Utils.parseShort(t.image);}
+}
+
+short get_offset() throws ParseException:
+{
+    Token t;
+}
+{
+    t = <INTEGER_LITERAL> {return Utils.parseShort(t.image);}
+}
