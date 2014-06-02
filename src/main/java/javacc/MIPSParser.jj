@@ -102,8 +102,22 @@ TOKEN :
 |   < SEH:      "seh" >
 /* logic instrs */
 |   < AND:      "and" >
+|   < ANDI:     "andi" >
 |   < LUI:      "lui" >
+|   < NOR:      "nor" >
+|   < OR:       "or" >
+|   < ORI:      "ori" >
 |   < XOR:      "xor" >
+|   < XORI:     "xori" >
+/* shift instrs */
+|   < SLL:      "sll" >
+|   < SLLV:     "sllv" >
+|   < SRA:      "sra" >
+|   < SRAV:     "srav" >
+|   < SRL:      "srl" >
+|   < SRLV:     "srlv" >
+|   < ROTR:     "rotr" >
+|   < ROTRV:    "rotrv" >
 /*  jump instrs */
 |   < B:        "b" >
 |   < BGEZ:     "bgez" >
@@ -141,7 +155,7 @@ void input() throws ParseException:
 void instruction() throws ParseException:
 {
     Token t;
-    int rs, rd, rt, target;
+    int rs, rd, rt, shamt, target;
     short imm, offset;
 }
 {
@@ -192,12 +206,53 @@ void instruction() throws ParseException:
     <AND> rd=get_reg() rs=get_reg() rt=get_reg()
     {instrs.add(new And(rd, rs, rt));}
 |
-    <XOR> rd=get_reg() rs=get_reg() rt=get_reg()
-    {instrs.add(new Xor(rd, rs, rt));}
+    <ANDI> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new Andi(rs, rt, imm));}
 |
     <LUI> rt=get_reg() imm=get_imm()
     {instrs.add(new Lui(rt, imm));}
 |
+    <NOR> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Nor(rd, rs, rt));}
+|
+    <OR> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Or(rd, rs, rt));}
+|
+    <ORI> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new Ori(rs, rt, imm));}
+|
+    <XOR> rd=get_reg() rs=get_reg() rt=get_reg()
+    {instrs.add(new Xor(rd, rs, rt));}
+|
+    <XORI> rt=get_reg() rs=get_reg() imm=get_imm()
+    {instrs.add(new Xori(rs, rt, imm));}
+|
+/* shift instrs */
+    <SLL> rd=get_reg() rt=get_reg() shamt=get_shamt()
+    {instrs.add(new Sll(rd, rt, shamt));}
+|
+    <SLLV> rd=get_reg() rt=get_reg() rs=get_reg()
+    {instrs.add(new Sllv(rd, rt, rs));}
+|
+    <SRA> rd=get_reg() rt=get_reg() shamt=get_shamt()
+    {instrs.add(new Sra(rd, rt, shamt));}
+|
+    <SRAV> rd=get_reg() rt=get_reg() rs=get_reg()
+    {instrs.add(new Srav(rd, rt, rs));}
+|
+    <SRL> rd=get_reg() rt=get_reg() shamt=get_shamt()
+    {instrs.add(new Srl(rd, rt, shamt));}
+|
+    <SRLV> rd=get_reg() rt=get_reg() rs=get_reg()
+    {instrs.add(new Srlv(rd, rt, rs));}
+|
+    <ROTR> rd=get_reg() rt=get_reg() shamt=get_shamt()
+    {instrs.add(new Rotr(rd, rt, shamt));}
+|
+    <ROTRV> rd=get_reg() rt=get_reg() rs=get_reg()
+    {instrs.add(new Rotrv(rd, rt, rs));}
+|
+/* branch instrs */
     <B> offset=get_offset()
     {instrs.add(new B(offset));}
 |
@@ -228,6 +283,14 @@ short get_imm() throws ParseException:
 }
 {
     t = <INTEGER_LITERAL> {return Utils.parseShort(t.image);}
+}
+
+int get_shamt() throws ParseException:
+{
+    Token t;
+}
+{
+    t = <INTEGER_LITERAL> {return (Utils.parseShort(t.image) & 0x1f);}
 }
 
 short get_offset() throws ParseException:

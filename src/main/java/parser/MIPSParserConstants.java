@@ -47,23 +47,49 @@ public interface MIPSParserConstants {
   /** RegularExpression Id. */
   int AND = 27;
   /** RegularExpression Id. */
-  int LUI = 28;
+  int ANDI = 28;
   /** RegularExpression Id. */
-  int XOR = 29;
+  int LUI = 29;
   /** RegularExpression Id. */
-  int B = 30;
+  int NOR = 30;
   /** RegularExpression Id. */
-  int BGEZ = 31;
+  int OR = 31;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 32;
+  int ORI = 32;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 33;
+  int XOR = 33;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 34;
+  int XORI = 34;
   /** RegularExpression Id. */
-  int OCTAL_LITERAL = 35;
+  int SLL = 35;
   /** RegularExpression Id. */
-  int REG_LOGO = 36;
+  int SLLV = 36;
+  /** RegularExpression Id. */
+  int SRA = 37;
+  /** RegularExpression Id. */
+  int SRAV = 38;
+  /** RegularExpression Id. */
+  int SRL = 39;
+  /** RegularExpression Id. */
+  int SRLV = 40;
+  /** RegularExpression Id. */
+  int ROTR = 41;
+  /** RegularExpression Id. */
+  int ROTRV = 42;
+  /** RegularExpression Id. */
+  int B = 43;
+  /** RegularExpression Id. */
+  int BGEZ = 44;
+  /** RegularExpression Id. */
+  int INTEGER_LITERAL = 45;
+  /** RegularExpression Id. */
+  int DECIMAL_LITERAL = 46;
+  /** RegularExpression Id. */
+  int HEX_LITERAL = 47;
+  /** RegularExpression Id. */
+  int OCTAL_LITERAL = 48;
+  /** RegularExpression Id. */
+  int REG_LOGO = 49;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -104,8 +130,21 @@ public interface MIPSParserConstants {
     "\"seb\"",
     "\"seh\"",
     "\"and\"",
+    "\"andi\"",
     "\"lui\"",
+    "\"nor\"",
+    "\"or\"",
+    "\"ori\"",
     "\"xor\"",
+    "\"xori\"",
+    "\"sll\"",
+    "\"sllv\"",
+    "\"sra\"",
+    "\"srav\"",
+    "\"srl\"",
+    "\"srlv\"",
+    "\"rotr\"",
+    "\"rotrv\"",
     "\"b\"",
     "\"bgez\"",
     "<INTEGER_LITERAL>",
