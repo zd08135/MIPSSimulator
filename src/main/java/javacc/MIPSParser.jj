@@ -120,7 +120,17 @@ TOKEN :
 |   < ROTRV:    "rotrv" >
 /*  jump instrs */
 |   < B:        "b" >
+|   < BAL:      "bal" >
 |   < BGEZ:     "bgez" >
+|   < BGTZ:     "bgtz" >
+|   < BGEZAL:   "bgezal" >
+|   < BLEZ:     "blez" >
+|   < BLTZ:     "bltz" >
+|   < BLTZAL:   "bltzal" >
+|   < BEQ:      "beq" >
+|   < BNE:      "bne" >
+|   < J:        "j" >
+|   < JAL:      "jal" >
 }
 
 TOKEN :
@@ -256,8 +266,38 @@ void instruction() throws ParseException:
     <B> offset=get_offset()
     {instrs.add(new B(offset));}
 |
+    <BAL> offset=get_offset()
+    {instrs.add(new Bal(offset));}
+|
     <BGEZ> rs=get_reg() offset=get_offset()
     {instrs.add(new Bgez(rs, offset));}
+|
+    <BGTZ> rs=get_reg() offset=get_offset()
+    {instrs.add(new Bgtz(rs, offset));}
+|
+    <BGEZAL> rs=get_reg() offset=get_offset()
+    {instrs.add(new Bgezal(rs, offset));}
+|
+    <BLEZ> rs=get_reg() offset=get_offset()
+    {instrs.add(new Blez(rs, offset));}
+|
+    <BLTZ> rs=get_reg() offset=get_offset()
+    {instrs.add(new Bltz(rs, offset));}
+|
+    <BLTZAL> rs=get_reg() offset=get_offset()
+    {instrs.add(new Bltzal(rs, offset));}
+|
+    <BEQ> rs=get_reg() rt=get_reg() offset=get_offset()
+    {instrs.add(new Beq(rs,rt,offset));}
+|
+    <BNE> rs=get_reg() rt=get_reg() offset=get_offset()
+    {instrs.add(new Bne(rs,rt,offset));}
+|
+    <J> target=get_target()
+    {instrs.add(new J(target));}
+|
+    <JAL> target=get_target()
+    {instrs.add(new Jal(target));}
 }
 
 int get_reg() throws ParseException:

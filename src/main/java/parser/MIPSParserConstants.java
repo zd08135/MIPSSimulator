@@ -79,17 +79,37 @@ public interface MIPSParserConstants {
   /** RegularExpression Id. */
   int B = 43;
   /** RegularExpression Id. */
-  int BGEZ = 44;
+  int BAL = 44;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 45;
+  int BGEZ = 45;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 46;
+  int BGTZ = 46;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 47;
+  int BGEZAL = 47;
   /** RegularExpression Id. */
-  int OCTAL_LITERAL = 48;
+  int BLEZ = 48;
   /** RegularExpression Id. */
-  int REG_LOGO = 49;
+  int BLTZ = 49;
+  /** RegularExpression Id. */
+  int BLTZAL = 50;
+  /** RegularExpression Id. */
+  int BEQ = 51;
+  /** RegularExpression Id. */
+  int BNE = 52;
+  /** RegularExpression Id. */
+  int J = 53;
+  /** RegularExpression Id. */
+  int JAL = 54;
+  /** RegularExpression Id. */
+  int INTEGER_LITERAL = 55;
+  /** RegularExpression Id. */
+  int DECIMAL_LITERAL = 56;
+  /** RegularExpression Id. */
+  int HEX_LITERAL = 57;
+  /** RegularExpression Id. */
+  int OCTAL_LITERAL = 58;
+  /** RegularExpression Id. */
+  int REG_LOGO = 59;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -146,7 +166,17 @@ public interface MIPSParserConstants {
     "\"rotr\"",
     "\"rotrv\"",
     "\"b\"",
+    "\"bal\"",
     "\"bgez\"",
+    "\"bgtz\"",
+    "\"bgezal\"",
+    "\"blez\"",
+    "\"bltz\"",
+    "\"bltzal\"",
+    "\"beq\"",
+    "\"bne\"",
+    "\"j\"",
+    "\"jal\"",
     "<INTEGER_LITERAL>",
     "<DECIMAL_LITERAL>",
     "<HEX_LITERAL>",

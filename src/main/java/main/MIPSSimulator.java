@@ -149,7 +149,7 @@ public class MIPSSimulator {
         rmo = new RegMemOps();
         int i = 0,pc;
         int l = instrs.size();
-        System.out.println(instrs.size() + " instructions in program");
+        int count = 0;
         System.out.println("Start executing");
         rmo.setPC(0);
         while(true)
@@ -159,12 +159,15 @@ public class MIPSSimulator {
                 break;
             Instruction instr = instrs.get(pc);
             instr.run(rmo);
+            count++;
             rmo.setIR(instr.generateIR());
             if(isStep == true)
                 rmo.printRegMemOpInfo(otsm);
         }
         if(isStep == false)
             rmo.printRegMemOpInfo(otsm);
+        System.out.println("Execute " + instrs.size() + " instrs.");
+        System.out.println("Totally execute by " + count + " times.");
         System.out.println("End executing");
     }
 }
